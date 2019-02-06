@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
 	"contrib.go.opencensus.io/exporter/stackdriver"
 	pb "github.com/ymotongpoo/stackdriver-error-reporting-demo/src/tokenize/genproto"
@@ -119,6 +120,16 @@ func (t *TokenizeServiceServer) Tokenize(ctx context.Context, tr *pb.TokenizeReq
 	l.Infof("[tokenize] end tokenize")
 
 	return mr, nil
+}
+
+func (t *TokenizeServiceServer) Check(ctx context.Context, r *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
+	return &healthpb.HealthCheckResponse{
+		Status: healthpb.HealthCheckResponse_SERVING,
+	}, nil
+}
+
+func (t *TokenizeServiceServer) Watch(r *healthpb.HealthCheckRequest, _ healthpb.Health_WatchServer) error {
+	return nil
 }
 
 // initialization
